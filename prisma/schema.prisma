@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  TEAM_MEMBER
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+  POSTER
+  AUDIO
+  FILE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  displayName  String
+  role         UserRole @default(TEAM_MEMBER)
+  createdAt    DateTime @default(now())
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  posts       Post[]
+  videos      Video[]
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  posts     Post[]
+  videos    Video[]
+}
+
+model Post {
+  id              String        @id @default(cuid())
+  slug            String        @unique
+  title           String
+  summary         String        @db.Text
+  content         String        @db.Text
+  coverImageId    String?
+  coverImage      Image?        @relation("PostCover", fields: [coverImageId], references: [id], onDelete: SetNull)
+  seoTitle        String?
+  seoDescription  String?
+  status          ContentStatus @default(DRAFT)
+  publishedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  categoryId      String?
+  category        Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags            Tag[]
+
+  @@index([status, publishedAt])
+}
+
+model Video {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  description    String        @db.Text
+  videoAssetId   String
+  videoAsset     MediaAsset    @relation("VideoFile", fields: [videoAssetId], references: [id], onDelete: Restrict)
+  posterAssetId  String?
+  posterAsset    MediaAsset?   @relation("VideoPoster", fields: [posterAssetId], references: [id], onDelete: SetNull)
+  seoTitle       String?
+  seoDescription String?
+  status         ContentStatus @default(DRAFT)
+  publishedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  categoryId     String?
+  category       Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags           Tag[]
+
+  @@index([status, publishedAt])
+}
+
+model Image {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  description    String        @db.Text
+  assetId        String
+  asset          MediaAsset    @relation("ImageAsset", fields: [assetId], references: [id], onDelete: Restrict)
+  album          String?
+  seoTitle       String?
+  seoDescription String?
+  status         ContentStatus @default(DRAFT)
+  publishedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  coverPosts     Post[]        @relation("PostCover")
+
+  @@index([status, publishedAt])
+  @@index([album])
+}
+
+model MediaAsset {
+  id                  String     @id @default(cuid())
+  kind                MediaKind
+  originalName        String
+  mimeType            String
+  size                Int
+  width               Int?
+  height              Int?
+  durationSeconds     Int?
+  storageKey          String     @unique
+  thumbnailStorageKey String?
+  publicUrl           String
+  thumbnailUrl        String?
+  createdAt           DateTime   @default(now())
+  videoFiles          Video[]    @relation("VideoFile")
+  videoPosters        Video[]    @relation("VideoPoster")
+  images              Image[]    @relation("ImageAsset")
+  siteSetting         SiteSetting? @relation("SiteAvatar")
+}
+
+model SiteSetting {
+  id               Int          @id @default(1)
+  siteName         String
+  siteDescription  String
+  siteUrl          String
+  avatarAssetId    String?      @unique
+  avatarAsset      MediaAsset?  @relation("SiteAvatar", fields: [avatarAssetId], references: [id], onDelete: SetNull)
+  socialLinks      Json
+  seoTitleTemplate String
+  updatedAt        DateTime     @updatedAt
+}
+
+model AgentWriteSession {
+  id        String           @id @default(cuid())
+  tokenHash String           @unique
+  scopes    String[]
+  mode      String           @default("draft-only")
+  purpose   String
+  createdBy String
+  createdAt DateTime         @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+  audits    AgentWriteAudit[]
+
+  @@index([expiresAt])
+}
+
+model AgentWriteAudit {
+  id          String            @id @default(cuid())
+  sessionId   String
+  session     AgentWriteSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  action      String
+  contentType String
+  contentId   String?
+  success     Boolean
+  error       String?
+  request     Json
+  result      Json?
+  createdAt   DateTime          @default(now())
+
+  @@index([sessionId, createdAt])
+  @@index([createdAt])
+}

@@ -1,0 +1,13 @@
+{
+  "name": "digital-human-assets",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build-assets.mjs"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.80",
+    "ag-psd": "^27.0.0",
+    "sharp": "^0.35.4"
+  }
+}

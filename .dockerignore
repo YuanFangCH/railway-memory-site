@@ -1,0 +1,16 @@
+node_modules
+.next
+storage
+backups
+.git
+.env
+coverage
+tests
+scripts
+*.log
+*.tsbuildinfo
+something
+svg-photo
+storage/media
+.video-posters
+*.mp4

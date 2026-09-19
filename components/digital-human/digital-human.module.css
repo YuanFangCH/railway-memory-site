@@ -1,0 +1,1038 @@
+.stageShell {
+  position: relative;
+  min-height: 42rem;
+  overflow: hidden;
+  border: 1px solid rgba(219, 225, 231, 0.88);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(0, 91, 172, 0.13), transparent 42%),
+    linear-gradient(155deg, #f7fafc 0%, #eef4f8 48%, #e7eef4 100%);
+  box-shadow: 0 24px 60px rgba(10, 39, 69, 0.12);
+  isolation: isolate;
+}
+
+.stageShell::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(0, 91, 172, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 91, 172, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  content: "";
+  mask-image: linear-gradient(to bottom, #000, transparent 90%);
+}
+
+.stageShell[data-dark="true"] {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(240, 198, 106, 0.17), transparent 39%),
+    linear-gradient(155deg, #0a2745 0%, #102f51 55%, #071d35 100%);
+}
+
+.stageHeader {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c8901f;
+  box-shadow: 0 0 0 5px rgba(200, 144, 31, 0.14);
+}
+
+.stageEyebrow {
+  margin: 0;
+  color: #5c6b76;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.stageShell[data-dark="true"] .stageEyebrow {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.stageActions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+}
+
+.stageAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(0, 91, 172, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #0a2745;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.stageAction:hover {
+  border-color: #c8901f;
+  color: #8a5a00;
+}
+
+.stageShell[data-dark="true"] .stageAction {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(5, 25, 45, 0.78);
+  color: #fff;
+}
+
+.stageFrame {
+  position: absolute;
+  inset: 66px 18px 48px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+
+.character {
+  position: relative;
+  width: min(100%, calc((100vh - 15rem) * 0.707));
+  max-height: 100%;
+  aspect-ratio: 1240 / 1754;
+  filter: drop-shadow(0 22px 24px rgba(26, 48, 70, 0.16));
+  transform: translate3d(0, 0, 0);
+  transform-origin: 50% 90%;
+  animation: bodyBreath 5.8s ease-in-out infinite;
+  --dh-look-x: 0px;
+  --dh-look-y: 0px;
+}
+
+.stageShell[data-speaking="true"] .character {
+  animation-duration: 3.8s;
+}
+
+.character::after {
+  position: absolute;
+  left: 24%;
+  right: 24%;
+  bottom: 1.8%;
+  z-index: -1;
+  height: 5%;
+  border-radius: 50%;
+  background: rgba(10, 39, 69, 0.14);
+  filter: blur(8px);
+  content: "";
+}
+
+.layer {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: var(--dh-pivot-x) var(--dh-pivot-y);
+  will-change: transform;
+}
+
+.body {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.head {
+  transform: translate3d(var(--dh-look-x), var(--dh-look-y), 0)
+    rotate(calc(var(--dh-look-x) * 0.22));
+}
+
+.hairFront {
+  animation: hairFrontSway 6.2s ease-in-out infinite;
+}
+
+.hairBack {
+  animation: hairBackSway 7.4s ease-in-out infinite;
+}
+
+.eye {
+  animation: blinkEyes 6.6s infinite;
+}
+
+.brow {
+  transition: transform 180ms ease;
+}
+
+.mouth {
+  transition: transform 110ms ease;
+}
+
+.character[data-motion="thinking"] .brow {
+  transform: translateY(-2px);
+}
+
+.character[data-motion="thinking"] .eye {
+  transform: scaleY(0.9);
+}
+
+.character[data-motion="speaking"] .mouth,
+.stageShell[data-speaking="true"] .mouth {
+  animation: speakMouth 430ms ease-in-out infinite alternate;
+}
+
+.character[data-motion="speaking"] .head,
+.stageShell[data-speaking="true"] .head {
+  animation: speakingNod 2.2s ease-in-out infinite;
+}
+
+.character[data-waving="true"] .leftArmUpper {
+  animation: leftArmUpperWave 2.4s cubic-bezier(0.22, 0.8, 0.26, 1) both;
+}
+
+.character[data-waving="true"] .leftArmLower {
+  animation: leftArmLowerWave 2.4s cubic-bezier(0.22, 0.8, 0.26, 1) both;
+}
+
+.character[data-waving="true"] .leftHand {
+  animation: handWave 2.4s cubic-bezier(0.22, 0.8, 0.26, 1) both;
+}
+
+.character[data-motion="speaking"] .rightForearm,
+.character[data-motion="speaking"] .rightHand {
+  animation: rightHandTalk 2.6s ease-in-out infinite;
+}
+
+.legLeft {
+  animation: leftLegShift 7.1s ease-in-out infinite;
+}
+
+.legRight {
+  animation: rightLegShift 7.1s ease-in-out infinite reverse;
+}
+
+.cloth {
+  animation: clothSway 4.7s ease-in-out infinite;
+}
+
+.smoke {
+  animation: smokeDrift 5.4s ease-in-out infinite;
+}
+
+.speechBubble {
+  position: absolute;
+  right: clamp(16px, 4vw, 54px);
+  top: 25%;
+  z-index: 90;
+  max-width: 250px;
+  border: 1px solid rgba(200, 144, 31, 0.28);
+  border-radius: 14px 14px 4px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 10px 13px;
+  color: #0a2745;
+  box-shadow: 0 14px 34px rgba(10, 39, 69, 0.13);
+  font-size: 12px;
+  line-height: 1.6;
+  backdrop-filter: blur(12px);
+}
+
+.stageShell[data-dark="true"] .speechBubble {
+  border-color: rgba(240, 198, 106, 0.28);
+  background: rgba(5, 25, 45, 0.86);
+  color: #fff;
+}
+
+.stageCaption {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  z-index: 80;
+  color: #5c6b76;
+  font-size: 11px;
+}
+
+.stageShell[data-dark="true"] .stageCaption {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.chatPanel {
+  display: flex;
+  min-height: 42rem;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: 0 24px 60px rgba(10, 39, 69, 0.1);
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 15px 16px;
+}
+
+.chatIdentity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatIdentity img {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(200, 144, 31, 0.35);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chatIdentity strong {
+  display: block;
+  font-size: 15px;
+}
+
+.chatIdentity span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.speechToggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.speechToggle[data-active="true"] {
+  border-color: rgba(0, 91, 172, 0.36);
+  background: rgba(0, 91, 172, 0.09);
+  color: var(--primary);
+}
+
+.speechToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.messages {
+  display: flex;
+  min-height: 18rem;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 16px;
+  background:
+    linear-gradient(rgba(0, 91, 172, 0.025), rgba(0, 91, 172, 0)),
+    var(--background);
+}
+
+.message {
+  max-width: 92%;
+  border: 1px solid var(--border);
+  border-radius: 12px 12px 12px 4px;
+  background: var(--card);
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.72;
+  overflow-wrap: anywhere;
+}
+
+.message[data-role="user"] {
+  align-self: flex-end;
+  border-color: transparent;
+  border-radius: 12px 12px 4px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  white-space: pre-wrap;
+}
+
+.message p {
+  margin: 0 0 8px;
+}
+
+.message p:last-child {
+  margin-bottom: 0;
+}
+
+.message ul,
+.message ol {
+  margin: 6px 0;
+  padding-left: 20px;
+}
+
+.message ul {
+  list-style: disc;
+}
+
+.message ol {
+  list-style: decimal;
+}
+
+.message a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.message code {
+  border-radius: 4px;
+  background: var(--muted);
+  padding: 1px 4px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted-foreground);
+}
+
+.thinking i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: thinkingDot 1s ease-in-out infinite;
+}
+
+.thinking i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.thinking i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+.quickPrompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding: 10px 12px 0;
+}
+
+.quickPrompt {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 5px 9px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.quickPrompt:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+
+.composer textarea {
+  min-width: 0;
+  flex: 1 1 auto;
+  resize: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 10px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  outline: none;
+}
+
+.composer textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 91, 172, 0.1);
+}
+
+.composer button {
+  display: grid;
+  min-width: 58px;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.composer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.stopButton {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 6px 9px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.tourPanel {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+}
+
+.tourHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  color: #fff;
+  background: linear-gradient(120deg, #0a2745, #123d68);
+}
+
+.tourHeader h2 {
+  margin: 0;
+  font-family: Georgia, "Songti SC", serif;
+  font-size: 22px;
+}
+
+.tourHeader p {
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 12px;
+}
+
+.tourStartActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tourButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tourButton[data-primary="true"] {
+  border-color: #f0c66a;
+  background: #c8901f;
+  color: #0a2745;
+}
+
+.tourBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: 18px;
+  padding: 18px 20px 20px;
+}
+
+.tourCard {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+.tourCard img {
+  width: 100%;
+  height: 142px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.tourStep {
+  color: #c8901f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.tourStep h3 {
+  margin: 4px 0 7px;
+  font-size: 18px;
+}
+
+.tourStep p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.72;
+}
+
+.tourControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.tourControl {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tourControl:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.countdown {
+  margin-left: auto;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tourList {
+  display: grid;
+  max-height: 26rem;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  overflow-y: auto;
+  padding-left: 18px;
+  border-left: 1px solid var(--border);
+}
+
+.tourListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 7px 8px;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tourListItem[aria-current="true"] {
+  background: rgba(0, 91, 172, 0.08);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.tourListItem span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--muted);
+  font-size: 10px;
+}
+
+.tourComplete {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(200, 144, 31, 0.4);
+  border-radius: 10px;
+  background: rgba(200, 144, 31, 0.08);
+  padding: 14px;
+}
+
+.tourComplete p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.tourLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tourLinks a {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: var(--primary);
+  font-size: 11px;
+}
+
+.intro {
+  max-width: 840px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.intro h1 {
+  margin: 0;
+  font-family: Georgia, "Songti SC", serif;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1.1;
+}
+
+.intro p {
+  margin: 12px auto 0;
+  max-width: 680px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(360px, 0.92fr);
+  gap: 18px;
+}
+
+.highlight {
+  animation: sectionHighlight 1.4s ease;
+}
+
+@keyframes bodyBreath {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -4px, 0) scale(1.006);
+  }
+}
+
+@keyframes blinkEyes {
+  0%,
+  43%,
+  47%,
+  100% {
+    transform: scaleY(1);
+  }
+  44.5%,
+  45.5% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes speakMouth {
+  from {
+    transform: translateY(1px) scaleY(0.72);
+  }
+  to {
+    transform: translateY(-1px) scaleY(1.22);
+  }
+}
+
+@keyframes speakingNod {
+  0%,
+  100% {
+    transform: translate3d(var(--dh-look-x), var(--dh-look-y), 0) rotate(0);
+  }
+  50% {
+    transform: translate3d(var(--dh-look-x), calc(var(--dh-look-y) + 3px), 0)
+      rotate(0.8deg);
+  }
+}
+
+@keyframes hairFrontSway {
+  0%,
+  100% {
+    transform: rotate(0) translate3d(0, 0, 0);
+  }
+  35% {
+    transform: rotate(0.7deg) translate3d(1px, -1px, 0);
+  }
+  70% {
+    transform: rotate(-0.5deg) translate3d(-1px, 1px, 0);
+  }
+}
+
+@keyframes hairBackSway {
+  0%,
+  100% {
+    transform: rotate(0) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: rotate(-1.1deg) translate3d(-2px, 1px, 0);
+  }
+}
+
+@keyframes clothSway {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(-0.7deg);
+  }
+}
+
+@keyframes smokeDrift {
+  0%,
+  100% {
+    opacity: 0.68;
+    transform: translate3d(0, 2px, 0) scale(0.98);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate3d(7px, -7px, 0) scale(1.035);
+  }
+}
+
+@keyframes leftArmUpperWave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25%,
+  72% {
+    transform: rotate(8deg);
+  }
+  45% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes leftArmLowerWave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25%,
+  72% {
+    transform: rotate(-10deg);
+  }
+  45% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes handWave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-12deg);
+  }
+  40% {
+    transform: rotate(9deg);
+  }
+  55% {
+    transform: rotate(-10deg);
+  }
+  70% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes rightHandTalk {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(-1.5deg) translateY(-1px);
+  }
+}
+
+@keyframes leftLegShift {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(0.5deg);
+  }
+}
+
+@keyframes rightLegShift {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(0.45deg);
+  }
+}
+
+@keyframes thinkingDot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes sectionHighlight {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  35% {
+    box-shadow: 0 0 0 4px rgba(200, 144, 31, 0.3);
+  }
+}
+
+@media (max-width: 1023px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stageShell {
+    min-height: 39rem;
+  }
+
+  .chatPanel {
+    min-height: 36rem;
+  }
+
+  .tourBody {
+    grid-template-columns: 1fr;
+  }
+
+  .tourList {
+    max-height: 15rem;
+    border-top: 1px solid var(--border);
+    border-left: 0;
+    padding-top: 10px;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .stageShell {
+    min-height: 31rem;
+    border-radius: 12px;
+  }
+
+  .stageHeader {
+    top: 12px;
+    left: 12px;
+  }
+
+  .stageActions {
+    top: 10px;
+    right: 10px;
+  }
+
+  .stageAction {
+    padding: 7px 9px;
+  }
+
+  .stageFrame {
+    inset: 54px 10px 36px;
+  }
+
+  .character {
+    width: min(100%, calc((100vh - 20rem) * 0.707));
+    min-width: 18rem;
+  }
+
+  .speechBubble {
+    top: 19%;
+    right: 10px;
+    max-width: 175px;
+    font-size: 11px;
+  }
+
+  .chatPanel {
+    min-height: 34rem;
+    border-radius: 12px;
+  }
+
+  .tourHeader {
+    padding: 15px;
+  }
+
+  .tourStartActions {
+    width: 100%;
+  }
+
+  .tourButton {
+    flex: 1 1 140px;
+    justify-content: center;
+  }
+
+  .tourBody {
+    padding: 14px;
+  }
+
+  .tourCard {
+    grid-template-columns: 1fr;
+  }
+
+  .tourCard img {
+    height: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .character,
+  .layer,
+  .head,
+  .hairFront,
+  .hairBack,
+  .eye,
+  .mouth,
+  .leftArmUpper,
+  .leftArmLower,
+  .leftHand,
+  .rightForearm,
+  .rightHand,
+  .legLeft,
+  .legRight,
+  .cloth,
+  .smoke,
+  .thinking i {
+    animation: none !important;
+    transition: none !important;
+  }
+}
